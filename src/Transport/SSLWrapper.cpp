@@ -40,7 +40,11 @@ SSLWrapper::SSLWrapper()
 
 SSLWrapper::~SSLWrapper()
 {
+#ifdef OPENSSL_VERSION_NUMBER > 3
+    EVP_default_properties_enable_fips(NULL, 1);
+#else
     FIPS_mode_set(0);
+#endif
     ENGINE_cleanup();
     CONF_modules_unload(1);
     EVP_cleanup();

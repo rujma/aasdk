@@ -1,0 +1,16 @@
+{
+	"dependencies": [
+		{
+			"name": "boost"
+		},
+		{
+			"name": "libusb"
+		},
+		{
+			"name": "openssl"
+		},
+		{
+			"name": "protobuf"
+		}
+	]
+}

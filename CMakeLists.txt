@@ -36,21 +36,12 @@ endif(AASDK_TEST)
 add_subdirectory(aasdk_proto)
 
 find_package(Boost REQUIRED COMPONENTS system log OPTIONAL_COMPONENTS unit_test_framework)
-find_package(libusb-1.0 REQUIRED)
-find_package(Protobuf REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(libusb REQUIRED IMPORTED_TARGET libusb-1.0)
+find_package(protobuf CONFIG REQUIRED)
 find_package(OpenSSL REQUIRED)
 
 set(AASDK_PROTO_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR})
-
-include_directories(${AASDK_PROTO_INCLUDE_DIRS}
-                        ${Boost_INCLUDE_DIRS}
-                        ${LIBUSB_1_INCLUDE_DIRS}
-                        ${PROTOBUF_INCLUDE_DIR}
-                        ${OPENSSL_INCLUDE_DIR}
-                        ${GTEST_INCLUDE_DIRS}
-                        ${GMOCK_INCLUDE_DIRS}
-                        ${include_directory}
-                        ${include_ut_directory})
 
 file(GLOB_RECURSE source_files ${sources_directory}/*.cpp)
 file(GLOB_RECURSE include_files ${include_directory}/*.hpp)
@@ -59,18 +50,28 @@ file(GLOB_RECURSE tests_include_files ${include_ut_directory}/*.hpp)
 
 list(REMOVE_ITEM source_files ${tests_source_files})
 
-add_library(aasdk SHARED
+add_library(aasdk STATIC
                 ${source_files}
                 ${include_files})
 
+target_include_directories(aasdk PRIVATE
+                        ${AASDK_PROTO_INCLUDE_DIRS}
+                        ${Boost_INCLUDE_DIRS}
+                        ${LIBUSB_1_INCLUDE_DIRS}
+                        ${protobuf_INCLUDE_DIR}
+                        ${OPENSSL_INCLUDE_DIR}
+                        ${GTEST_INCLUDE_DIRS}
+                        ${GMOCK_INCLUDE_DIRS}
+                        ${include_directory}
+                        ${include_ut_directory})
+
 add_dependencies(aasdk aasdk_proto)
-target_link_libraries(aasdk
-                        aasdk_proto
-                        ${Boost_LIBRARIES}
-                        ${LIBUSB_1_LIBRARIES}
-                        ${PROTOBUF_LIBRARIES}
-                        ${OPENSSL_LIBRARIES}
-                        ${WINSOCK2_LIBRARIES})
+target_link_libraries(aasdk PRIVATE OpenSSL::SSL)
+target_link_libraries(aasdk PRIVATE OpenSSL::Crypto)
+target_link_libraries(aasdk PRIVATE PkgConfig::libusb)
+target_link_libraries(aasdk PRIVATE protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite)
+target_link_libraries(aasdk PRIVATE Boost::boost Boost::system Boost::log)
+target_link_libraries(aasdk PRIVATE aasdk_proto)
 
 if(AASDK_TEST)
     add_executable(aasdk_ut

@@ -1,12 +1,6 @@
 
 # aasdk
 
-### Support project
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9YH2QCXZ3YZXJ)
-
-For support of other platforms please contact me at f1xstudiopl@gmail.com
-
-### Brief description
 C++ object-oriented library containing implementation of core AndroidAuto(tm) functionalities needed to build headunit software.
 
 ### Supported functionalities
@@ -28,6 +22,15 @@ C++ object-oriented library containing implementation of core AndroidAuto(tm) fu
  - Control channel
  - Input channel
 
+
+### Building
+
+```
+$ cmake --preset=default
+$ cd build
+# make
+```
+
 ### License
 GNU GPLv3
 
@@ -42,4 +45,5 @@ Copyrights (c) 2018 f1x.studio (Michal Szwaj)
  - [Protocol buffers](https://developers.google.com/protocol-buffers/)
  - [OpenSSL](https://www.openssl.org/)
  - [Google test framework](https://github.com/google/googletest)
+
 
